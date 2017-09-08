@@ -35,7 +35,7 @@ class Model(ModelDesc):
 
     def _build_graph(self, input_vars):
         image, label = input_vars
-        image = image / 128.0 - 1
+        # image = image / 128.0 - 1
 
         def conv(name, l, channel, stride):
             return Conv2D(name, l, channel, 3, stride=stride,
@@ -117,16 +117,16 @@ def get_data(train_or_test):
     pp_mean = ds.get_per_pixel_mean()
     if isTrain:
         augmentors = [
-            imgaug.CenterPaste((40, 40)),
-            imgaug.RandomCrop((32, 32)),
-            imgaug.Flip(horiz=True),
+            # imgaug.CenterPaste((40, 40)),
+            # imgaug.RandomCrop((32, 32)),
+            # imgaug.Flip(horiz=True),
             #imgaug.Brightness(20),
             #imgaug.Contrast((0.6,1.4)),
-            imgaug.MapImage(lambda x: x - pp_mean),
+            imgaug.MapImage(lambda x: x/255.0),
         ]
     else:
         augmentors = [
-            imgaug.MapImage(lambda x: x - pp_mean)
+            imgaug.MapImage(lambda x: x/255.0)
         ]
     ds = AugmentImageComponent(ds, augmentors)
     ds = BatchData(ds, BATCH_SIZE, remainder=not isTrain)
